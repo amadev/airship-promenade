@@ -65,6 +65,25 @@ log
 log === Installing system packages ===
 set -x
 
+if [ "{{ config['HostSystem:packages.mini_mirror.enabled'] }}" = "true" ]; then
+    DOWNLOAD_DIR=/cache/mini-mirror
+    mkdir -p "$DOWNLOAD_DIR"
+    cd "$DOWNLOAD_DIR"
+    curl -L -f {{ config['HostSystem:packages.mini_mirror.download_url'] }}  -o mini-mirror.tar
+    tar -xf mini-mirror.tar
+    cd $DOWNLOAD_DIR/$(du -s * | sort -nr | head | cut -f2)
+    tar -xf layer.tar
+    dpkg -i $(find . -name 'docker*.deb')
+    cat "$DOWNLOAD_DIR/mini-mirror.tar" | docker load
+    docker run --detach --publish '{{ config['HostSystem:packages.mini_mirror.port'] }}:80' --image {{ config['HostSystem:packages.mini_mirror.enabled'] }}
+    URL=localhost:{{ config['HostSystem:packages.mini_mirror.port'] }}
+    mv /etc/apt/sources.list /etc/apt/sources.list.backup
+    curl -s $URL/aptly_repo_signing.key | apt-key add -
+    echo "deb http://$URL xenial main" > /etc/apt/sources.list
+    echo "deb-src http://$URL xenial main" >> /etc/apt/sources.list
+    apt-get update
+fi
+
 end=$(($(date +%s) + 600))
 while true; do
     if ! apt-get update; then

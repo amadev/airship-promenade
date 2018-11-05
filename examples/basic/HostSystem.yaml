@@ -37,6 +37,11 @@ data:
     kubernetes:
       kubectl: gcr.io/google_containers/hyperkube-amd64:v1.10.2
   packages:
+    mini_mirror:
+      enabled: true
+      port: 8889
+      download_url: https://amadev+robot:D4JH6VUISC7Y3Q3E9VYJ5H8PUWHX4FHWW5JLYXN2V8V1WK7Z189SV3TOROP50QLB@quay.io/c1/squash/amadev/mini-mirror/latest
+      image: quay.io/amadev/mini-mirror:latest.squash
     repositories:
       - deb http://apt.dockerproject.org/repo ubuntu-xenial main
     keys:

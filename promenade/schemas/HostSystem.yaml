@@ -127,6 +127,24 @@ data:
           items:
             $ref: '#/definitions/apt_source_line'
 
+        mini_mirror:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            port:
+              type: integer
+            download_url:
+              type: string
+            image:
+              type: string
+          required:
+            - enabled
+            - port
+            - download_url
+            - image
+          additionalProperties: false
+
       required:
         - required
       additionalProperties: false
